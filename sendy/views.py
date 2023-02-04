@@ -9,8 +9,33 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import EmailMessage
 from django.core.mail.backends.smtp import EmailBackend
 
+# import time to add a delay between each email
+import time
+def async_send_email(
+        body: dict,
+        recipient_list: list,
+        email_from: str,
+        number_of_emails_to_send: int,
+        time_interval: int
+):
+    try:
+        # loop through the number of emails to send and send the email at the specified time interval
+        for i in range(number_of_emails_to_send):
+            send_mail(
+                body["subject"],
+                body["message"],
+                email_from,
+                recipient_list,
+                fail_silently=False,
+            )
+            time.sleep(time_interval/1000)
 
-
+        return HttpResponse("Hello, world. successfully sent the email.")
+    except Exception as e:
+        
+        print(e)
+        return HttpResponse(f"<h1>An exception occurred</h1> {e}")
+    
 @csrf_exempt
 def index(request):
     # default recipient is in settings.py
@@ -49,19 +74,27 @@ def index(request):
     "use_tls": True,
     "fail_silently": False,
 
-}
-
-
-        
-
-        ''')
+}''')
 
     body = json.loads(request.body)
     email_from = settings.EMAIL_HOST_USER
     custom_recipients = body["recipients"]
     recipient_list = ["ngenondumia@gmail.com", ]
-    recipient = body["recipient"]
+
+    try: 
+        number_of_emails_to_send = body["number_of_emails_to_send"]
+    except:
+        number_of_emails_to_send = 1
+    # time interval between each email
+    try:
+        time_interval = body["time_interval"]
+    except:
+        time_interval = 1000
+    
+    
     mode = body["mode"]
+    if mode is None:
+        return HttpResponse("<h1>500 Internal Server Error</h1> <p>Mode is missing. Please check your request body and try again</p>", status=500)
     # check if the recipient is not none
 
     if custom_recipients is not None:
@@ -77,8 +110,8 @@ def index(request):
         return HttpResponse("<h1>500 Internal Server Error</h1> <p>Mode must be either default or custom. Please check your request body and try again</p>", status=500)
     
     if mode=="default":
-        pass
-    elif mode=="custom":
+        print("default")
+    if mode=="custom":
         host = body["host"]
         port = body["port"]
         username = body["username"]
@@ -101,16 +134,31 @@ def index(request):
         email.send(fail_silently=fail_silently, auth_user=username, auth_password=password, connection=EmailBackend(host=host, port=port, use_tls=use_tls, username=username, password=password))
         return HttpResponse("Hello, world. successfully sent the email.")
     
-    
-
-
-    if request.method == 'GET':
-        return HttpResponse("GET is not allowed")
-    elif request.method == 'POST':
+    if request.method == 'POST':
         try:
-            send_mail(body["subject"], body["message"],
-                      email_from, recipient_list)
+            if number_of_emails_to_send > 1:
+
+                for i in range(number_of_emails_to_send):
+                    send_mail(
+                        body["subject"],
+                        body["message"],
+                        email_from,
+                        recipient_list,
+                        fail_silently=False,
+                    )
+                    time.sleep(time_interval/1000)
+            else:
+                send_mail(
+                    body["subject"],
+                    body["message"],
+                    email_from,
+                    recipient_list,
+                    fail_silently=False,
+                )
+        
             return HttpResponse("Hello, world. successfully sent the email.")
         except Exception as e:
+            
             print(e)
             return HttpResponse(f"<h1>An exception occurred</h1> {e}")
+

@@ -31,7 +31,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "interstellarcg@gmail.com"
-EMAIL_HOST_PASSWORD = "xrribtxohrwbhpgd"
+EMAIL_HOST_PASSWORD = "rrmbopcvtboqkrbc"
 # Application definition
 
 INSTALLED_APPS = [
