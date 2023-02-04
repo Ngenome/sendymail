@@ -13,6 +13,7 @@ from django.core.mail.backends.smtp import EmailBackend
 
 @csrf_exempt
 def index(request):
+    # default recipient is in settings.py
     if request.method == 'GET':
         return HttpResponse("GET is not allowed")
     if request.method == 'OPTIONS':
@@ -25,7 +26,6 @@ def index(request):
         <h3>Request Body</h3>
         <ul>
             <li>recipients: This is a list of recipients. If you want to use the default recipient, leave this field blank</li>
-            <li>recipient: This is the default recipient. If you want to use a custom recipient, leave this field blank</li>
             <li>mode: This is the mode of sending the email. It can either be default or custom. If you choose custom, you must provide the following fields: host, port, username, password, use_tls and fail_silently</li>
             <li>subject: This is the subject of the email</li>
             <li>message: This is the message of the email</li>
@@ -36,7 +36,22 @@ def index(request):
             <li>use_tls: This is a boolean that specifies if TLS should be used or not</li>
             <li>fail_silently: This is a boolean that specifies if the email should fail silently or not</li>
         </ul>
-       
+<h3>Example Request Body</h3>
+{
+    "recipients": [],
+    "mode": "default",
+    "subject": "Test Email",
+    "message": "This is a test message",
+    "host": "",
+    "port": "",
+    "username": "",
+    "password": "",
+    "use_tls": True,
+    "fail_silently": False,
+
+}
+
+
         
 
         ''')
