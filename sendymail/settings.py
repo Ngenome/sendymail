@@ -30,8 +30,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = "interstellarcg@gmail.com"
-EMAIL_HOST_PASSWORD = "rrmbopcvtboqkrbc"
+EMAIL_HOST_USER = "ngenondumia@gmail.com"
+EMAIL_HOST_PASSWORD = "hnjsuyidclssxldf"
 # Application definition
 
 INSTALLED_APPS = [
@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
+
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
